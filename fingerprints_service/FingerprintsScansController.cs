@@ -12,7 +12,7 @@ namespace fingerprints_service
             if (ModelState.IsValid) 
             {
                 Console.WriteLine("Received hsid: " + hsf.hsid);
-                return InternalServerError();
+                return StatusCode(System.Net.HttpStatusCode.NotImplemented);
             }
             else
             {

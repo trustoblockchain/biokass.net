@@ -4,11 +4,14 @@ using System.Net.Http;
 
 namespace fingerprints_service
 {
-    class Program
+    public class Program
     {
+        private static string serverUrl;
+
         static void Main(string[] args)
         {
             string baseAddress = "http://localhost:3000/";
+            serverUrl = args[0];
 
             // Start OWIN host 
             using (WebApp.Start<Startup>(url: baseAddress))
@@ -16,6 +19,14 @@ namespace fingerprints_service
                 Console.WriteLine("Server started on " + baseAddress);
                 Console.WriteLine("Press Enter to Exit.");
                 Console.ReadLine(); 
+            }
+        }
+
+        public static string ServerUrl
+        {
+            get
+            {
+                return serverUrl;
             }
         }
     }
