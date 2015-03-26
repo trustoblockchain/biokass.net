@@ -17,6 +17,12 @@ namespace fingerprints_service
                 defaults: new { id = RouteParameter.Optional }
             );
 
+            config.Routes.MapHttpRoute(
+                name: "StaticPages",
+                routeTemplate: "static/{controller}/{page}"
+            );
+
+            config.EnableSystemDiagnosticsTracing();
             appBuilder.UseWebApi(config);
         }
     }

@@ -11,7 +11,15 @@ namespace fingerprints_service
         static void Main(string[] args)
         {
             string baseAddress = "http://localhost:3000/";
-            serverUrl = args[0];
+            if (args.Length > 0) {
+                serverUrl = args[0];
+            }
+            else
+            {
+                serverUrl = "http://october-user.codio.io:3000";
+                Console.WriteLine("Using default server: " + serverUrl);
+            }
+            
 
             // Start OWIN host 
             using (WebApp.Start<Startup>(url: baseAddress))

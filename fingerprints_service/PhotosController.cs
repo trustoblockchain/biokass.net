@@ -10,28 +10,31 @@ namespace fingerprints_service
 {
     public class PhotosController: ApiController
     {
-        public async Task<IHttpActionResult> PostTakePhoto(HardwareSessionForm hsf)
+        public async Task<IHttpActionResult> PostTakePhoto(TokenForm token)
         {
-            string hardwareSessionsUrl = Program.ServerUrl + "/api/hardwareSessions";
+            UriBuilder uriBuilder = new UriBuilder(Program.ServerUrl);
+            uriBuilder.Path = "/api/photos";
+            uriBuilder.Query = "tokenid=" + token.tokenid;
+
             if (ModelState.IsValid) 
             {
-                Console.WriteLine("Received hsid: " + hsf.hsid);
+                Console.WriteLine("Received hsid: " + token.tokenid);
 
                 Task<Vector> CaptureImageAsync = Task.Run<Vector>(() => CaptureImage());
                 Vector image = await CaptureImageAsync;
 
                 HttpClient httpClient = new HttpClient();
-                string hardwareSessionUrl = hardwareSessionsUrl + "/" + hsf.hsid;
-                HttpResponseMessage response = await httpClient.PostAsync(hardwareSessionUrl, 
+                HttpResponseMessage response = await httpClient.PostAsync(uriBuilder.Uri, 
                     new ByteArrayContent((byte [])image.get_BinaryData()));
 
-                if(response.IsSuccessStatusCode)
+                if (response.IsSuccessStatusCode)
                 {
-                    return StatusCode(System.Net.HttpStatusCode.Created);
+                    EntityIdResponse scan = await response.Content.ReadAsAsync<EntityIdResponse>();
+                    return Created(response.Headers.Location, scan);
                 }
                 else
                 {
-                    return StatusCode(response.StatusCode);
+                    return InternalServerError(new ServerResponseError(response.StatusCode));
                 }
             }
             else

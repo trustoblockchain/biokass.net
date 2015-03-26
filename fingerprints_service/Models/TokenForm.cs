@@ -3,9 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace fingerprints_service.Models
 {
-    public class HardwareSessionForm
+    public class TokenForm
     {
         [Required]
-        public string hsid { get; set; }
+        public string tokenid { get; set; }
     }
 }
