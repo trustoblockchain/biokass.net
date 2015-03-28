@@ -34,7 +34,7 @@ namespace fingerprints_service
                 }
                 else
                 {
-                    return InternalServerError(new ServerResponseError(response.StatusCode));
+                    return InternalServerError(new ServerResponseError(response));
                 }
             }
             else

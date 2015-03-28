@@ -17,7 +17,6 @@ namespace fingerprints_service
             else
             {
                 serverUrl = "http://october-user.codio.io:3000";
-                Console.WriteLine("Using default server: " + serverUrl);
             }
             
 
@@ -25,6 +24,7 @@ namespace fingerprints_service
             using (WebApp.Start<Startup>(url: baseAddress))
             {
                 Console.WriteLine("Server started on " + baseAddress);
+                Console.WriteLine("Using REST server: " + serverUrl);
                 Console.WriteLine("Press Enter to Exit.");
                 Console.ReadLine(); 
             }

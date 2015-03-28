@@ -1,5 +1,8 @@
-﻿using Owin;
+﻿using fingerprints_service_api;
+using Microsoft.Practices.Unity;
+using Owin;
 using System.Web.Http;
+using Unity.WebApi;
 
 namespace fingerprints_service
 {
@@ -16,6 +19,16 @@ namespace fingerprints_service
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+
+            var container = new UnityContainer();
+
+            // register all your components with the container here
+            // it is NOT necessary to register your controllers
+
+            // e.g. container.RegisterType<ITestService, TestService>();
+            container.RegisterType<IFingerprintsScanner, FutronicServices.FutronicScanner>();
+
+            config.DependencyResolver = new UnityDependencyResolver(container);
 
             config.Routes.MapHttpRoute(
                 name: "StaticPages",
