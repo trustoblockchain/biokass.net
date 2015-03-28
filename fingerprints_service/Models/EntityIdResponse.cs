@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace fingerprints_service.Models
 {
-    class EntityIdResponse
+    public class EntityIdResponse
     {
         public string id {get; set;}
     }

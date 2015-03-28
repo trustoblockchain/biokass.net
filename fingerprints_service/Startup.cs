@@ -1,4 +1,5 @@
-﻿using fingerprints_service_api;
+﻿using fingerprints_service.Services;
+using fingerprints_service_api;
 using Microsoft.Practices.Unity;
 using Owin;
 using System.Web.Http;
@@ -27,6 +28,8 @@ namespace fingerprints_service
 
             // e.g. container.RegisterType<ITestService, TestService>();
             container.RegisterType<IFingerprintsScanner, FutronicServices.FutronicScanner>();
+            container.RegisterType<FingerprintsScanningService, FingerprintsScanningService>(
+                new InjectionProperty("ServerUrl", Program.ServerUrl));
 
             config.DependencyResolver = new UnityDependencyResolver(container);
 

@@ -125,6 +125,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerResponseError.cs" />
+    <Compile Include="Services\FingerprintsScanningService.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
