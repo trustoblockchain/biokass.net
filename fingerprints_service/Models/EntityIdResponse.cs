@@ -8,6 +8,6 @@ namespace fingerprints_service.Models
 {
     class EntityIdResponse
     {
-        public string Id {get; set;}
+        public string id {get; set;}
     }
 }

@@ -51,7 +51,7 @@ namespace fingerprints_service
                     {
                         Console.WriteLine("The scan was created successfully on server.");
                         EntityIdResponse scan = await response.Content.ReadAsAsync<EntityIdResponse>();
-                        Console.WriteLine("\tscan.id = " + scan.Id);
+                        Console.WriteLine("\tscan.id = " + scan.id);
                         Console.WriteLine("\tLocation: " + response.Headers.Location);
                         foreach (var h in response.Headers)
                         {
@@ -66,7 +66,7 @@ namespace fingerprints_service
                         {
                             Console.WriteLine("Creating Location header manually");
                             var locationBuilder = new UriBuilder(Program.ServerUrl);
-                            locationBuilder.Path = "/api/fingerprintscans/" + scan.Id;
+                            locationBuilder.Path = "/api/fingerprintscans/" + scan.id;
                             locationHeader = locationBuilder.Uri;
 
                         }
