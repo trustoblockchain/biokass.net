@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#define UseTestBitmap
+
+using System.Collections.Generic;
 using System.Web.Http;
 using fingerprints_service.Models;
 using System;
@@ -6,6 +8,7 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using ScanAPIHelper;
 using fingerprints_service.Image;
+using System.IO;
 
 namespace fingerprints_service
 {
@@ -25,14 +28,15 @@ namespace fingerprints_service
 
                     Console.WriteLine("Received tokenid: " + token.tokenid);
 
-                    Task<byte[]> scanTask = Task.Run<byte[]> (() => ScanFingerprintAsync());
-                    byte[] imageBytes = await scanTask;
+                    
 
                     UriBuilder uriBuilder = new UriBuilder(Program.ServerUrl);
                     uriBuilder.Path = "/api/fingerprintsscans";
                     uriBuilder.Query = "tokenid=" + token.tokenid;
                     Uri serverUri = uriBuilder.Uri;
                     Console.WriteLine("Sending the image bytes to " + serverUri);
+
+                    var imageBytes = await ScanFingerprintAsync();
 
                     HttpClient httpClient = new HttpClient();
                     HttpResponseMessage response = await httpClient.PostAsync(serverUri,
@@ -76,7 +80,25 @@ namespace fingerprints_service
             }
         }
 
-        byte[] ScanFingerprintAsync()
+        async Task<byte[]> ScanFingerprintAsync()
+        {
+#if UseTestBitmap
+            string filename = @"C:\Users\mihai\Downloads\3de7a836-0373-50c7-9ab5-eeb5df3fb8d9.bmp";
+            byte[] result;
+
+            using (FileStream SourceStream = File.Open(filename, FileMode.Open))
+            {
+                result = new byte[SourceStream.Length];
+                await SourceStream.ReadAsync(result, 0, (int)SourceStream.Length);
+            }
+            return result;
+#else
+            Task<byte[]> scanTask = Task.Run<byte[]>(() => ScanFingerprint());
+            return await scanTask;
+#endif
+        }
+
+        byte[] ScanFingerprint()
         {
             Console.WriteLine("Scanning fingerprints...");
             Device scanner = new Device();
