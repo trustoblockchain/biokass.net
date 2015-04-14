@@ -76,9 +76,6 @@
     <Reference Include="ScanAPIHelper">
       <HintPath>..\libs\x86\ScanAPIHelper.dll</HintPath>
     </Reference>
-    <Reference Include="SourceAFIS">
-      <HintPath>..\packages\SourceAFIS.1.7\lib\net45\SourceAFIS.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -118,7 +115,9 @@
     <Compile Include="FingerprintsScansController.cs" />
     <Compile Include="ImageFormatNotFound.cs" />
     <Compile Include="Models\EntityIdResponse.cs" />
+    <Compile Include="Models\MatchResponse.cs" />
     <Compile Include="Models\TokenForm.cs" />
+    <Compile Include="Mono.Options\Options.cs" />
     <Compile Include="NoDeviceException.cs" />
     <Compile Include="PagesController.cs" />
     <Compile Include="PhotosController.cs" />
@@ -130,6 +129,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <Compile Include="FingerprintsVerificationsController.cs" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -151,6 +151,10 @@
     <ProjectReference Include="..\FutronicServices\FutronicServices.csproj">
       <Project>{1a71e3e5-c97c-4aba-857a-71da3e763455}</Project>
       <Name>FutronicServices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SourceAfisProcessor\SourceAfisProcessor.csproj">
+      <Project>{e5b42cd6-6392-424c-87c2-5e1fd67f079f}</Project>
+      <Name>SourceAfisProcessor</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

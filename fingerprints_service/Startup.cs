@@ -15,11 +15,6 @@ namespace fingerprints_service
         {
             // Configure Web API for self-host. 
             HttpConfiguration config = new HttpConfiguration();
-            config.Routes.MapHttpRoute(
-                name: "DefaultApi",
-                routeTemplate: "api/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
-            );
 
             var container = new UnityContainer();
 
@@ -28,10 +23,22 @@ namespace fingerprints_service
 
             // e.g. container.RegisterType<ITestService, TestService>();
             container.RegisterType<IFingerprintsScanner, FutronicServices.FutronicScanner>();
+
+            container.RegisterType<IFingerprintsProcessor, SourceAfisProcessor.SourceAfisProcessor>(
+                new InjectionProperty("Treshold", Program.Treshold));
+            
             container.RegisterType<FingerprintsScanningService, FingerprintsScanningService>(
                 new InjectionProperty("ServerUrl", Program.ServerUrl));
 
+            container.RegisterType<PagesController, PagesController>(
+                new InjectionProperty("WaitdeviceScript", Program.WaitdeviceScript));
             config.DependencyResolver = new UnityDependencyResolver(container);
+
+            config.Routes.MapHttpRoute(
+                name: "DefaultApi",
+                routeTemplate: "api/{controller}/{id}",
+                defaults: new { id = RouteParameter.Optional }
+            );
 
             config.Routes.MapHttpRoute(
                 name: "StaticPages",

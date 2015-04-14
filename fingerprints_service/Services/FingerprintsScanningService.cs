@@ -17,11 +17,14 @@ namespace fingerprints_service.Services
     public class FingerprintsScanningService
     {
         private IFingerprintsScanner scanner;
+        private IFingerprintsProcessor processor;
+
         public string ServerUrl { get; set; }
 
-        public FingerprintsScanningService(IFingerprintsScanner scanner)
+        public FingerprintsScanningService(IFingerprintsScanner scanner, IFingerprintsProcessor processor)
         {
             this.scanner = scanner;
+            this.processor = processor;
         }
 
         private Uri buildRestUri(string tokenid, string kind) {
@@ -36,10 +39,20 @@ namespace fingerprints_service.Services
             var imageBytes = await scanner.ScanFingerprintAsync();
             var scanResponse = await PostBitmapAsync(imageBytes, tokenid);
 
-            string template = "";
+            string template = processor.ExtractTemplate(imageBytes);
+
+            Console.WriteLine("Template extracted: " + template);
             await PostTemplateAsync(template, tokenid);
 
             return scanResponse;
+        }
+
+        public async Task<bool> VerifyFingerprint(string tokenid)
+        {
+            var probeImageBytes = await scanner.ScanFingerprintAsync();
+            var candidateTemplate = await GetCandidateTemplateAsync(tokenid);
+
+            return processor.Verify(probeImageBytes, candidateTemplate);
         }
 
         async Task<FingerPrintResponse> PostBitmapAsync(byte[] imageBytes, string tokenid)
@@ -85,8 +98,60 @@ namespace fingerprints_service.Services
             }
         }
 
-        async Task PostTemplateAsync(string template, string tokenid) {
-            
+        async Task PostTemplateAsync(string template, string tokenid) 
+        {
+            var serverUri = buildRestUri(tokenid, "template");
+            Console.WriteLine("POST fingerprint template to: " + serverUri);
+
+            HttpClient httpClient = new HttpClient();
+            HttpResponseMessage response = await httpClient.PostAsync(serverUri,
+                new StringContent(template));
+            Console.WriteLine("POST fingerprint template response code: " + response.StatusCode + " " + response.ReasonPhrase);
+            Console.WriteLine("POST fingerprint template response: " + await response.Content.ReadAsStringAsync());
+
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("The scan was updated with the template.");
+                foreach (var h in response.Headers)
+                {
+                    Console.WriteLine("\t" + h.Key + ": " + h.Value);
+                }
+            }
+            else
+            {
+                throw new ServerResponseError(response);
+            }
+
+        }
+
+        async Task<string> GetCandidateTemplateAsync(string tokenid)
+        {
+            var serverUri = buildRestUri(tokenid, "template");
+            Console.WriteLine("GET fingerprint template from: " + serverUri);
+            Console.WriteLine("tokenid: " + tokenid);
+
+            HttpClient httpClient = new HttpClient();
+            HttpResponseMessage response = await httpClient.GetAsync(serverUri);
+
+            Console.WriteLine("GET template response code: " + response.StatusCode + " " + response.ReasonPhrase);
+
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Template received from server");
+                string template = await response.Content.ReadAsStringAsync();
+
+                foreach (var h in response.Headers)
+                {
+                    Console.WriteLine("\t" + h.Key + ": " + h.Value);
+                }
+                
+                Console.WriteLine("Template retrieved from server: " + template);
+                return template;
+            }
+            else
+            {
+                throw new ServerResponseError(response);
+            }
         }
 
     }

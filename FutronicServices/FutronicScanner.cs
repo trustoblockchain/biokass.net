@@ -18,7 +18,9 @@ namespace FutronicServices
         public async Task<byte[]> ScanFingerprintAsync()
         {
 #if UseTestBitmap
-            string filename = @"C:\Users\mihai\Downloads\3de7a836-0373-50c7-9ab5-eeb5df3fb8d9.bmp";
+            //string filename = @"C:\Users\mihai\Downloads\3de7a836-0373-50c7-9ab5-eeb5df3fb8d9.bmp";
+            //string filename = @"C:\Users\mihai\Documents\TestDatabase\FVC2000\DB1_B\101_1.tif";
+            string filename = @"C:\Users\mihai\Documents\TestDatabase\FVC2000\DB1_B\101_2.bmp";
             byte[] result;
 
             using (FileStream SourceStream = File.Open(filename, FileMode.Open))
